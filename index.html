@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EF Language Abroad — Task Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root {
+  --ef-pink:#C2477A; --ef-pink-light:#E08AAE; --ef-magenta:#A03060;
+  --ef-purple:#7B5EA7; --ef-yellow:#FFF9C4;
+  --ef-text:#1A1A2E; --ef-gray:#6B7280; --ef-border:#EDE4EF;
+  --white:#ffffff;
+
+  --c-website:#0072CE;   --c-website-bg:#EFF6FF;
+  --c-campaign:#C2477A;  --c-campaign-bg:#FAEDF3;
+  --c-social:#7B5EA7;    --c-social-bg:#F0EBF9;
+  --c-email:#059669;     --c-email-bg:#D1FAE5;
+  --c-tickets:#DC2626;   --c-tickets-bg:#FEE2E2;
+  --c-sales:#D97706;     --c-sales-bg:#FEF3C7;
+  --c-admin:#64748B;     --c-admin-bg:#F1F5F9;
+  --c-nelly:#0EA5E9;     --c-nelly-bg:#E0F2FE;
+  --c-ambassador:#7C3AED;--c-ambassador-bg:#EDE9FE;
+  --c-marketing:#F59E0B; --c-marketing-bg:#FFFBEB;
+  --p-high:#DC2626;   --p-high-bg:#FEE2E2;
+  --p-medium:#D97706; --p-medium-bg:#FEF3C7;
+  --p-low:#059669;    --p-low-bg:#D1FAE5;
+}
+
+body { font-family:'Inter',sans-serif; color:var(--ef-text); min-height:100vh; background:#F9F5FB; }
+
+/* ── GRADIENT ACCENT (top/left behind sidebar+header) ── */
+.grad-bg {
+  position:fixed; top:0; left:0; width:260px; height:100vh; z-index:0;
+  background: radial-gradient(ellipse at 10% 5%, #ffffff 0%, #FFD6EC 30%, #F9A8D4 55%, #E879F9 80%, #A855F7 100%);
+  opacity:0.95;
+}
+.grad-header-bg {
+  position:fixed; top:0; left:0; right:0; height:64px; z-index:150;
+  background: linear-gradient(95deg, #fff0f8 0%, #FFB6D9 25%, #F472B6 55%, #E879F9 80%, #A855F7 100%);
+}
+
+/* ── HEADER ── */
+header {
+  position:sticky; top:0; z-index:200; height:64px;
+  display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+  background: linear-gradient(95deg, #fff0f6 0%, #F2C4D8 25%, #D4789E 55%, #B06AAF 80%, #7B5EA7 100%);
+  box-shadow:0 2px 20px rgba(160,50,100,0.15);
+}
+.header-left{display:flex;align-items:center;gap:14px;}
+.ef-logo{
+  background:white; color:var(--ef-pink); font-weight:800; font-size:1rem;
+  padding:5px 11px; border-radius:8px; letter-spacing:-0.5px;
+  box-shadow:0 2px 8px rgba(233,30,140,0.2);
+}
+.header-title { font-size:1rem; font-weight:700; color:white; text-shadow:0 1px 3px rgba(150,0,100,0.2); }
+.header-sub { font-size:0.72rem; color:rgba(255,255,255,0.8); margin-top:1px; }
+#date-display { font-size:0.76rem; color:rgba(255,255,255,0.85); font-weight:500; }
+
+/* ── LAYOUT ── */
+.app{display:flex;height:calc(100vh - 64px);overflow:hidden;position:relative;z-index:1;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:232px; min-width:232px; overflow-y:auto; padding:16px 0;
+  background: linear-gradient(175deg, #fff8fb 0%, #F5D5E8 40%, #DCAAC8 70%, #B06AAF 100%);
+  border-right:1px solid rgba(160,50,100,0.12);
+  position:relative; z-index:10;
+}
+.sidebar-section-title{font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,0.55);padding:16px 18px 7px;}
+.sidebar-item{
+  display:flex;align-items:center;gap:9px;padding:8px 16px;font-size:0.8rem;
+  cursor:pointer;transition:all 0.15s;border-left:3px solid transparent;
+  color:rgba(255,255,255,0.85); border-radius:0 8px 8px 0; margin-right:8px;
+}
+.sidebar-item:hover{background:rgba(255,255,255,0.18);color:white;}
+.sidebar-item.active{background:rgba(255,255,255,0.25);border-left-color:white;color:white;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,0.1);}
+.sidebar-item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sidebar-item .sc{margin-left:auto;background:rgba(255,255,255,0.2);border-radius:10px;padding:1px 7px;font-size:0.67rem;font-weight:700;color:white;}
+.sidebar-divider{height:1px;background:rgba(255,255,255,0.2);margin:8px 10px;}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;padding:22px 24px;background:#F9F5FB;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+.topbar h2{font-size:1.05rem;font-weight:800;flex:1;color:var(--ef-text);}
+.search-box{display:flex;align-items:center;background:white;border:1.5px solid #F0E6F6;border-radius:9px;padding:7px 12px;gap:7px;box-shadow:0 1px 4px rgba(200,30,140,0.07);}
+.search-box input{border:none;outline:none;font-family:'Inter',sans-serif;font-size:0.83rem;width:150px;background:transparent;color:var(--ef-text);}
+.btn-primary{background:linear-gradient(135deg,var(--ef-pink) 0%,var(--ef-purple) 100%);color:white;border:none;border-radius:9px;padding:8px 17px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;white-space:nowrap;box-shadow:0 2px 10px rgba(160,50,100,0.22);}
+.btn-primary:hover{opacity:0.88;}
+.btn-outline{background:white;border:1.5px solid #E8C8D8;border-radius:9px;padding:7px 14px;font-size:0.82rem;font-weight:600;cursor:pointer;color:var(--ef-pink);transition:all 0.2s;white-space:nowrap;}
+.btn-outline:hover{background:#FAF0F5;border-color:var(--ef-pink);}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px;}
+.stat-card{background:white;border-radius:13px;padding:13px 15px;border:1.5px solid #F0E6F6;box-shadow:0 1px 5px rgba(200,30,140,0.06);}
+.stat-num{font-size:1.75rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--ef-pink),var(--ef-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:transparent;}
+.stat-label{font-size:0.7rem;color:var(--ef-gray);margin-top:3px;font-weight:500;}
+
+/* ── CAPTURE ── */
+.capture-panel{background:white;border-radius:13px;padding:18px 22px;margin-bottom:18px;border:2px dashed #DCAAC8;display:none;box-shadow:0 1px 8px rgba(160,50,100,0.06);}
+.capture-panel.open{display:block;}
+.capture-panel h3{font-size:0.88rem;font-weight:700;color:var(--ef-pink);margin-bottom:4px;}
+.capture-panel p{font-size:0.75rem;color:var(--ef-gray);margin-bottom:10px;}
+.capture-panel textarea{width:100%;height:78px;border:1.5px solid #F0E6F6;border-radius:8px;padding:9px 11px;font-family:'Inter',sans-serif;font-size:0.83rem;resize:none;outline:none;color:var(--ef-text);}
+.capture-panel textarea:focus{border-color:var(--ef-pink);}
+.capture-actions{display:flex;gap:9px;margin-top:9px;}
+
+/* ── KANBAN ── */
+.kanban-board{display:flex;gap:14px;overflow-x:auto;padding-bottom:14px;align-items:flex-start;}
+.kanban-col{background:white;border-radius:14px;min-width:268px;flex:1;border:1.5px solid #F0E6F6;display:flex;flex-direction:column;max-height:calc(100vh - 285px);box-shadow:0 2px 10px rgba(200,30,140,0.06);}
+.kanban-col-header{padding:13px 15px;border-bottom:1.5px solid #F9F0FB;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-radius:14px 14px 0 0;}
+.col-label{display:flex;align-items:center;gap:8px;font-size:0.85rem;font-weight:700;color:var(--ef-text);}
+.col-pill{border-radius:6px;padding:2px 9px;font-size:0.69rem;font-weight:700;color:white;}
+.col-todo-h{border-top:3px solid #F59E0B;}   .col-todo-h .col-pill{background:#F59E0B;}
+.col-prog-h{border-top:3px solid #C2477A;} .col-prog-h .col-pill{background:linear-gradient(90deg,#C2477A,#7B5EA7);}
+.col-review-h{border-top:3px solid #7B5EA7;} .col-review-h .col-pill{background:#7B5EA7;}
+.col-done-h{border-top:3px solid #10B981;}   .col-done-h .col-pill{background:#10B981;}
+.kanban-tasks{padding:11px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:9px;}
+
+/* Add task inline button */
+.add-in-col{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  border:1.5px dashed #DCAAC8;border-radius:9px;padding:8px;
+  font-size:0.78rem;font-weight:600;color:var(--ef-pink);cursor:pointer;
+  transition:all 0.15s;background:transparent;margin-top:4px;
+}
+.add-in-col:hover{background:#FAF0F5;border-color:var(--ef-pink);}
+
+.empty-col{text-align:center;color:#E0B0D0;padding:28px 10px;font-size:0.76rem;}
+.empty-col .e-icon{font-size:1.7rem;margin-bottom:5px;display:block;}
+
+/* ── TASK CARD ── */
+.task-card{border:1.5px solid #F0E6F6;border-radius:10px;padding:12px 13px;background:white;transition:all 0.15s;cursor:default;border-left:4px solid #E0C0D8;}
+.task-card:hover{box-shadow:0 4px 16px rgba(200,30,140,0.12);transform:translateY(-1px);}
+.task-card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:7px;margin-bottom:8px;}
+.task-title{font-size:0.84rem;font-weight:600;line-height:1.4;flex:1;color:var(--ef-text);}
+.task-title.done-text{text-decoration:line-through;color:#C0A0B0;}
+.card-actions{display:flex;gap:2px;flex-shrink:0;}
+.card-actions button{border:none;background:none;cursor:pointer;font-size:0.75rem;padding:3px 4px;border-radius:5px;transition:background 0.15s;opacity:0.55;}
+.card-actions button:hover{background:#FDE8F4;opacity:1;}
+.task-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
+.badge{border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;}
+.ticket-badge{display:inline-flex;align-items:center;gap:3px;background:#FEE2E2;color:#DC2626;border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;}
+.task-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:3px;}
+.task-market{font-size:0.68rem;color:var(--ef-gray);}
+.task-due{font-size:0.68rem;color:var(--ef-gray);}
+.task-due.overdue{color:#DC2626;font-weight:700;}
+.task-notes-preview{font-size:0.71rem;color:#A07090;margin-top:6px;padding-top:6px;border-top:1px solid #F9F0FB;line-height:1.45;white-space:pre-wrap;word-break:break-word;}
+.move-btns{display:flex;gap:4px;margin-top:7px;flex-wrap:wrap;}
+.move-btn{font-size:0.67rem;border:1.5px solid #EDE4EF;border-radius:5px;padding:2px 8px;cursor:pointer;background:white;font-weight:600;color:#906080;transition:all 0.15s;}
+.move-btn:hover{border-color:var(--ef-pink);color:var(--ef-pink);background:#FAF0F5;}
+
+/* ── NELLY ── */
+.nelly-strip{background:linear-gradient(135deg,#C2477A 0%,#7B5EA7 100%);border-radius:13px;padding:14px 20px;margin-bottom:18px;color:white;display:flex;align-items:center;gap:14px;box-shadow:0 4px 16px rgba(123,94,167,0.22);}
+.nelly-avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.nelly-info{flex:1;} .nelly-info h4{font-size:0.88rem;font-weight:700;} .nelly-info p{font-size:0.74rem;opacity:0.82;margin-top:1px;}
+.nelly-stats{display:flex;gap:14px;}
+.nelly-stat .n{font-size:1.3rem;font-weight:800;text-align:center;} .nelly-stat .l{font-size:0.65rem;opacity:0.8;text-align:center;}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(80,0,60,0.35);z-index:300;justify-content:center;align-items:center;backdrop-filter:blur(3px);}
+.overlay.open{display:flex;}
+.modal{background:white;border-radius:18px;padding:26px;width:530px;max-width:95vw;box-shadow:0 24px 60px rgba(200,30,140,0.18);max-height:90vh;overflow-y:auto;}
+.modal h3{font-size:1rem;font-weight:800;color:var(--ef-text);margin-bottom:18px;}
+.form-row{display:flex;flex-direction:column;gap:4px;margin-bottom:12px;}
+.form-row label{font-size:0.74rem;font-weight:600;color:var(--ef-pink);}
+.form-row input,.form-row select,.form-row textarea{border:1.5px solid #F0E6F6;border-radius:8px;padding:8px 11px;font-family:'Inter',sans-serif;font-size:0.85rem;outline:none;color:var(--ef-text);transition:border 0.2s;background:white;}
+.form-row input:focus,.form-row select:focus,.form-row textarea:focus{border-color:var(--ef-pink);}
+.form-row textarea{resize:vertical;min-height:72px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.modal-btns{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;}
+.btn-cancel{background:#F9F0F8;border:1.5px solid #F0E6F6;border-radius:8px;padding:8px 16px;font-size:0.83rem;font-weight:600;cursor:pointer;color:var(--ef-gray);}
+.btn-cancel:hover{background:#F0E6F6;}
+.parsed-item{display:flex;align-items:center;gap:10px;padding:9px 11px;border:1.5px solid #F0E6F6;border-radius:8px;margin-bottom:7px;background:#FDF8FD;}
+.parsed-item input[type=checkbox]{accent-color:var(--ef-pink);width:15px;height:15px;}
+.parsed-item span{font-size:0.83rem;flex:1;}
+
+/* ── CALENDAR ── */
+.calendar-section{background:white;border-radius:14px;border:1.5px solid #E8E0F0;box-shadow:0 2px 10px rgba(123,94,167,0.07);margin-bottom:18px;overflow:hidden;}
+.calendar-section-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1.5px solid #F3EEF9;cursor:pointer;user-select:none;}
+.calendar-section-header-left{display:flex;align-items:center;gap:10px;}
+.calendar-section-title{font-size:0.88rem;font-weight:700;color:#3B2060;}
+.calendar-section-sub{font-size:0.72rem;color:#7B5EA7;margin-top:1px;}
+.cal-toggle{font-size:0.8rem;color:#7B5EA7;transition:transform 0.2s;}
+.cal-toggle.open{transform:rotate(180deg);}
+.calendar-body{padding:16px 18px;}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.cal-nav-title{font-size:1rem;font-weight:800;color:#1A1A2E;}
+.cal-nav-btns{display:flex;gap:6px;}
+.cal-nav-btn{border:1.5px solid #EDE4EF;border-radius:7px;padding:5px 12px;font-size:0.8rem;font-weight:600;cursor:pointer;background:white;color:#6B7280;transition:all 0.15s;}
+.cal-nav-btn:hover{border-color:var(--ef-pink);color:var(--ef-pink);}
+.cal-nav-btn.today-btn{background:var(--ef-pink,#C2477A);color:white;border-color:var(--ef-pink,#C2477A);font-size:0.75rem;}
+.cal-nav-btn.today-btn:hover{opacity:0.85;}
+.cal-add-btn{background:linear-gradient(135deg,var(--ef-pink,#C2477A),var(--ef-purple,#7B5EA7));color:white;border:none;border-radius:7px;padding:6px 14px;font-size:0.78rem;font-weight:600;cursor:pointer;transition:opacity 0.2s;}
+.cal-add-btn:hover{opacity:0.88;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:#EDE4EF;border-radius:10px;overflow:hidden;}
+.cal-day-name{background:#F7F3FC;padding:7px 4px;text-align:center;font-size:0.68rem;font-weight:700;color:#7B5EA7;text-transform:uppercase;letter-spacing:0.5px;}
+.cal-day{background:white;min-height:80px;padding:5px 6px;position:relative;transition:background 0.1s;vertical-align:top;}
+.cal-day:hover{background:#FDF8FF;}
+.cal-day.other-month{background:#FAFAFA;}
+.cal-day.other-month .cal-day-num{color:#D1C4E9;}
+.cal-day.today{background:#FDF3F8;}
+.cal-day.today .cal-day-num{background:var(--ef-pink,#C2477A);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.cal-day-num{font-size:0.75rem;font-weight:700;color:#374151;margin-bottom:3px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.cal-event{border-radius:4px;padding:2px 5px;font-size:0.62rem;font-weight:600;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;transition:opacity 0.15s;line-height:1.4;}
+.cal-event:hover{opacity:0.8;}
+.cal-more{font-size:0.6rem;color:#9CA3AF;font-weight:600;cursor:pointer;padding:1px 3px;}
+.cal-more:hover{color:var(--ef-pink,#C2477A);}
+/* Event type colours */
+.ev-campaign {background:#FDE8F4;color:#C2477A;}
+.ev-deadline {background:#FEE2E2;color:#DC2626;}
+.ev-meeting  {background:#E0F2FE;color:#0369A1;}
+.ev-social   {background:#F0EBF9;color:#7B5EA7;}
+.ev-website  {background:#EFF6FF;color:#0072CE;}
+.ev-email    {background:#D1FAE5;color:#065F46;}
+.ev-other    {background:#F1F5F9;color:#475569;}
+/* Upcoming strip */
+.upcoming-strip{display:flex;gap:10px;overflow-x:auto;padding:0 18px 16px;margin-top:4px;}
+.upcoming-chip{display:flex;flex-direction:column;background:#F7F3FC;border-radius:9px;padding:9px 13px;min-width:170px;border:1.5px solid #EDE4EF;flex-shrink:0;cursor:pointer;transition:all 0.15s;}
+.upcoming-chip:hover{border-color:#C2477A;background:#FDF5FB;transform:translateY(-1px);}
+.upcoming-chip-date{font-size:0.68rem;font-weight:700;color:#7B5EA7;margin-bottom:3px;}
+.upcoming-chip-title{font-size:0.78rem;font-weight:600;color:#1A1A2E;line-height:1.3;}
+.upcoming-chip-tag{margin-top:5px;font-size:0.63rem;font-weight:700;border-radius:4px;padding:1px 6px;display:inline-block;}
+
+/* ── OWNERSHIP TABS ── */
+.ownership-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.own-tab{border:1.5px solid #EDE4EF;border-radius:8px;padding:7px 16px;font-size:0.8rem;font-weight:600;cursor:pointer;background:white;color:#6B7280;transition:all 0.15s;display:flex;align-items:center;gap:6px;}
+.own-tab:hover{border-color:var(--ef-pink);color:var(--ef-pink);}
+.own-tab.active{background:linear-gradient(135deg,var(--ef-pink,#C2477A),var(--ef-purple,#7B5EA7));color:white;border-color:transparent;box-shadow:0 2px 8px rgba(160,50,100,0.2);}
+.own-tab .tab-count{background:rgba(255,255,255,0.25);border-radius:8px;padding:0 6px;font-size:0.68rem;}
+.own-tab:not(.active) .tab-count{background:rgba(0,0,0,0.07);color:inherit;}
+/* ownership badge on card */
+.own-badge-mine{background:#EFF6FF;color:#0072CE;border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;}
+.own-badge-followup{background:#FEF3C7;color:#B45309;border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;}
+.own-badge-helping{background:#F0EBF9;color:#7B5EA7;border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;}
+/* helper pill on card */
+.helper-pill{display:inline-flex;align-items:center;gap:3px;background:#F0FDF4;color:#059669;border-radius:5px;padding:2px 7px;font-size:0.67rem;font-weight:700;border:1px solid #D1FAE5;}
+
+/* ── NEEDS ATTENTION ── */
+.attention-section{background:white;border-radius:14px;border:1.5px solid #FFE4B5;box-shadow:0 2px 10px rgba(217,119,6,0.08);margin-bottom:18px;overflow:hidden;}
+.attention-header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1.5px solid #FFF3DC;cursor:pointer;user-select:none;}
+.attention-header-left{display:flex;align-items:center;gap:10px;}
+.attention-title{font-size:0.88rem;font-weight:700;color:#92400E;}
+.attention-sub{font-size:0.72rem;color:#B45309;margin-top:1px;}
+.attention-badge{background:#FEF3C7;color:#92400E;border-radius:8px;padding:2px 10px;font-size:0.72rem;font-weight:700;border:1px solid #FDE68A;}
+.attention-toggle{font-size:0.8rem;color:#B45309;transition:transform 0.2s;}
+.attention-toggle.open{transform:rotate(180deg);}
+.attention-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;padding:14px 18px;}
+.attention-card{border:1.5px solid #FDE68A;border-radius:10px;padding:11px 13px;background:#FFFBF0;border-left:4px solid #F59E0B;transition:all 0.15s;cursor:default;}
+.attention-card:hover{box-shadow:0 3px 12px rgba(245,158,11,0.18);transform:translateY(-1px);}
+.attention-card-title{font-size:0.82rem;font-weight:600;color:#1A1A2E;margin-bottom:6px;line-height:1.4;}
+.attention-meta{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px;}
+.attention-days{font-size:0.7rem;color:#B45309;font-weight:700;display:flex;align-items:center;gap:3px;}
+.attention-actions{display:flex;gap:5px;margin-top:7px;}
+.attention-btn{font-size:0.68rem;border:1.5px solid #FDE68A;border-radius:5px;padding:2px 8px;cursor:pointer;background:white;font-weight:600;color:#B45309;transition:all 0.15s;}
+.attention-btn:hover{border-color:#F59E0B;background:#FEF3C7;}
+.attention-empty{padding:20px;text-align:center;color:#D4B896;font-size:0.8rem;}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#F0C6E4;border-radius:10px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="ef-logo">EF</div>
+    <div>
+      <div class="header-title">Language Abroad — Task Hub</div>
+      <div class="header-sub">Marketing · Campaigns · Markets · Nelly</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span id="date-display"></span>
+    <button onclick="toggleThemePanel()" title="Customise colours" style="background:rgba(255,255,255,0.2);border:1.5px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 12px;color:white;font-family:'Inter',sans-serif;font-size:0.78rem;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;">🎨 Theme</button>
+  </div>
+</header>
+
+<!-- THEME PANEL -->
+<div id="theme-panel" style="display:none;position:fixed;top:68px;right:16px;z-index:400;background:white;border-radius:16px;padding:22px;width:300px;box-shadow:0 12px 40px rgba(80,0,60,0.18);border:1.5px solid #EDE4EF;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+    <span style="font-weight:800;font-size:0.95rem;color:#1A1A2E;">🎨 Customise Theme</span>
+    <button onclick="toggleThemePanel()" style="border:none;background:none;cursor:pointer;font-size:1rem;color:#9CA3AF;">✕</button>
+  </div>
+
+  <div style="font-size:0.72rem;font-weight:700;color:#C2477A;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Quick Presets</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:18px;" id="preset-grid"></div>
+
+  <div style="font-size:0.72rem;font-weight:700;color:#C2477A;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Custom Colours</div>
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Header gradient start
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-h1" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-h1-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Header gradient end
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-h2" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-h2-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Sidebar gradient start
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-s1" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-s1-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Sidebar gradient end
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-s2" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-s2-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Page background
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-bg" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-bg-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+    <label style="display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#6B7280;font-weight:500;">
+      Accent colour
+      <div style="display:flex;align-items:center;gap:6px;"><input type="color" id="tc-accent" oninput="applyCustom()" style="width:32px;height:28px;border:none;border-radius:6px;cursor:pointer;padding:0;"><span id="tc-accent-val" style="font-size:0.7rem;color:#9CA3AF;font-family:monospace;"></span></div>
+    </label>
+  </div>
+  <button onclick="resetTheme()" style="margin-top:14px;width:100%;border:1.5px solid #EDE4EF;border-radius:8px;padding:8px;font-family:'Inter',sans-serif;font-size:0.8rem;font-weight:600;color:#9CA3AF;cursor:pointer;background:white;transition:all 0.15s;" onmouseover="this.style.borderColor='#C2477A';this.style.color='#C2477A'" onmouseout="this.style.borderColor='#EDE4EF';this.style.color='#9CA3AF'">↺ Reset to Default</button>
+</div>
+
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-section-title">Views</div>
+  <div class="sidebar-item active" onclick="setView('all',this)"><span>🗂️</span> All Tasks <span class="sc" id="sc-all">0</span></div>
+  <div class="sidebar-item" onclick="setView('nelly',this)"><span>👩‍💼</span> Nelly / Ambassadors <span class="sc" id="sc-nelly">0</span></div>
+  <div class="sidebar-item" onclick="setView('tickets',this)"><span>🎫</span> Tickets / Support <span class="sc" id="sc-tickets">0</span></div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-title">Category</div>
+  <div class="sidebar-item" onclick="setView('website',this)"><span class="dot" style="background:var(--c-website)"></span> Website <span class="sc" id="sc-website">0</span></div>
+  <div class="sidebar-item" onclick="setView('campaign',this)"><span class="dot" style="background:var(--c-campaign)"></span> Campaigns <span class="sc" id="sc-campaign">0</span></div>
+  <div class="sidebar-item" onclick="setView('social',this)"><span class="dot" style="background:var(--c-social)"></span> Social Media <span class="sc" id="sc-social">0</span></div>
+  <div class="sidebar-item" onclick="setView('email',this)"><span class="dot" style="background:var(--c-email)"></span> Email Comms <span class="sc" id="sc-email">0</span></div>
+  <div class="sidebar-item" onclick="setView('sales',this)"><span class="dot" style="background:var(--c-sales)"></span> Sales Info <span class="sc" id="sc-sales">0</span></div>
+  <div class="sidebar-item" onclick="setView('marketing',this)"><span class="dot" style="background:var(--c-marketing)"></span> Marketing Tasks <span class="sc" id="sc-marketing">0</span></div>
+  <div class="sidebar-item" onclick="setView('admin',this)"><span class="dot" style="background:var(--c-admin)"></span> Admin <span class="sc" id="sc-admin">0</span></div>
+  <div class="sidebar-item" onclick="setView('ambassador',this)"><span class="dot" style="background:var(--c-ambassador)"></span> Ambassador Project <span class="sc" id="sc-ambassador">0</span></div>
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-title">Markets</div>
+  <div id="market-sidebar"></div>
+</nav>
+
+<!-- CONTENT -->
+<div class="content">
+
+  <div class="nelly-strip" id="nelly-strip" style="display:none">
+    <div class="nelly-avatar">👩‍💼</div>
+    <div class="nelly-info"><h4>Nelly — Ambassador Project Lead</h4><p>All ambassador &amp; Nelly tasks in one view</p></div>
+    <div class="nelly-stats">
+      <div class="nelly-stat"><div class="n" id="nelly-todo">0</div><div class="l">To Do</div></div>
+      <div class="nelly-stat"><div class="n" id="nelly-prog">0</div><div class="l">In Progress</div></div>
+      <div class="nelly-stat"><div class="n" id="nelly-done">0</div><div class="l">Done</div></div>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <h2 id="view-title">All Tasks</h2>
+    <div class="search-box"><span>🔍</span><input type="text" placeholder="Search tasks…" id="search-input" oninput="render()"/></div>
+    <button class="btn-outline" onclick="toggleCapture()">⚡ Quick Capture</button>
+    <button class="btn-primary" onclick="openAddModal(null)">+ Add Task</button>
+  </div>
+
+  <!-- CALENDAR -->
+  <div class="calendar-section" id="calendar-section">
+    <div class="calendar-section-header" onclick="toggleCalendar()">
+      <div class="calendar-section-header-left">
+        <span style="font-size:1.2rem;">📅</span>
+        <div>
+          <div class="calendar-section-title">Monthly Calendar</div>
+          <div class="calendar-section-sub" id="cal-header-sub">Campaigns · Deadlines · Meetings · Market dates</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="cal-toggle open" id="cal-toggle">▼</span>
+      </div>
+    </div>
+    <div id="calendar-body">
+      <div class="calendar-body">
+        <div class="cal-nav">
+          <div class="cal-nav-btns">
+            <button class="cal-nav-btn" onclick="calPrev()">‹ Prev</button>
+            <button class="cal-nav-btn today-btn" onclick="calToday()">Today</button>
+            <button class="cal-nav-btn" onclick="calNext()">Next ›</button>
+          </div>
+          <div class="cal-nav-title" id="cal-month-title"></div>
+          <button class="cal-add-btn" onclick="openAddEventModal()">＋ Add Event</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div style="padding:0 18px 6px;font-size:0.72rem;font-weight:700;color:#7B5EA7;text-transform:uppercase;letter-spacing:1px;">Upcoming this month</div>
+      <div class="upcoming-strip" id="upcoming-strip"></div>
+    </div>
+  </div>
+
+  <!-- NEEDS ATTENTION -->
+  <div class="attention-section" id="attention-section">
+    <div class="attention-header" onclick="toggleAttention()">
+      <div class="attention-header-left">
+        <span style="font-size:1.2rem;">⏰</span>
+        <div>
+          <div class="attention-title">Needs Your Attention</div>
+          <div class="attention-sub">Tasks sitting untouched for 3+ days — time for a check-in</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="attention-badge" id="attention-count">0 tasks</span>
+        <span class="attention-toggle open" id="attention-toggle">▼</span>
+      </div>
+    </div>
+    <div id="attention-body">
+      <div class="attention-grid" id="attention-grid"></div>
+    </div>
+  </div>
+
+  <div class="capture-panel" id="capture-panel">
+    <h3>⚡ Quick Capture</h3>
+    <p>Paste meeting notes, emails, or a brain dump — I'll pull out the action items for you.</p>
+    <textarea id="capture-text" placeholder="e.g. Follow up with Romania about banner, check Thursday campaign, Nelly to send ambassador brief by Friday…"></textarea>
+    <div class="capture-actions">
+      <button class="btn-primary" onclick="parseNotes()">✨ Extract Tasks</button>
+      <button class="btn-cancel" onclick="toggleCapture()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card"><div class="stat-num" id="s-total">0</div><div class="stat-label">Total Tasks</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-todo" style="-webkit-text-fill-color:#F59E0B;color:#F59E0B">0</div><div class="stat-label">To Do</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-prog">0</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-review" style="-webkit-text-fill-color:#9C27B0;color:#9C27B0">0</div><div class="stat-label">In Review</div></div>
+    <div class="stat-card"><div class="stat-num" id="s-done" style="-webkit-text-fill-color:#10B981;color:#10B981">0</div><div class="stat-label">Done</div></div>
+  </div>
+
+  <!-- OWNERSHIP TABS -->
+  <div class="ownership-tabs">
+    <button class="own-tab active" onclick="setOwnerFilter('all',this)">🗂️ All Tasks <span class="tab-count" id="ot-all">0</span></button>
+    <button class="own-tab" onclick="setOwnerFilter('mine',this)">🙋 My Tasks <span class="tab-count" id="ot-mine">0</span></button>
+    <button class="own-tab" onclick="setOwnerFilter('followup',this)">👀 Waiting / Follow Up <span class="tab-count" id="ot-followup">0</span></button>
+    <button class="own-tab" onclick="setOwnerFilter('helping',this)">🤝 I'm Helping With <span class="tab-count" id="ot-helping">0</span></button>
+  </div>="-webkit-text-fill-color:#10B981;color:#10B981">0</div><div class="stat-label">Done</div></div>
+  </div>
+
+  <div class="kanban-board">
+    <div class="kanban-col">
+      <div class="kanban-col-header col-todo-h"><div class="col-label">📋 To Do <span class="col-pill" id="k-count-todo">0</span></div></div>
+      <div class="kanban-tasks" id="col-todo"></div>
+      <button class="add-in-col" style="margin:0 11px 11px" onclick="openAddModal('todo')">＋ Add task here</button>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header col-prog-h"><div class="col-label">⚙️ In Progress <span class="col-pill" id="k-count-inprogress">0</span></div></div>
+      <div class="kanban-tasks" id="col-inprogress"></div>
+      <button class="add-in-col" style="margin:0 11px 11px" onclick="openAddModal('inprogress')">＋ Add task here</button>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header col-review-h"><div class="col-label">👀 In Review <span class="col-pill" id="k-count-review">0</span></div></div>
+      <div class="kanban-tasks" id="col-review"></div>
+      <button class="add-in-col" style="margin:0 11px 11px" onclick="openAddModal('review')">＋ Add task here</button>
+    </div>
+    <div class="kanban-col">
+      <div class="kanban-col-header col-done-h"><div class="col-label">✅ Done <span class="col-pill" id="k-count-done">0</span></div></div>
+      <div class="kanban-tasks" id="col-done"></div>
+      <button class="add-in-col" style="margin:0 11px 11px" onclick="openAddModal('done')">＋ Add task here</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ADD EVENT MODAL -->
+<div class="overlay" id="event-modal">
+  <div class="modal" style="width:460px;">
+    <h3 id="event-modal-title">📅 Add Calendar Event</h3>
+    <div class="form-row"><label>Event Title *</label><input type="text" id="ev-name" placeholder="e.g. Romania campaign goes live"/></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Date *</label><input type="date" id="ev-date"/></div>
+      <div class="form-row"><label>End Date (optional)</label><input type="date" id="ev-end"/></div>
+      <div class="form-row"><label>Type</label>
+        <select id="ev-type">
+          <option value="campaign">📣 Campaign</option>
+          <option value="deadline">🔴 Deadline</option>
+          <option value="meeting">📞 Meeting</option>
+          <option value="social">📱 Social</option>
+          <option value="website">🌐 Website</option>
+          <option value="email">📧 Email</option>
+          <option value="other">📌 Other</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Market</label>
+        <select id="ev-market">
+          <option value="">— All / Central —</option>
+          <option value="Romania">🇷🇴 Romania</option>
+          <option value="Slovenia">🇸🇮 Slovenia</option>
+          <option value="Latvia">🇱🇻 Latvia</option>
+          <option value="UK">🇬🇧 UK</option>
+          <option value="Hungary">🇭🇺 Hungary</option>
+          <option value="Tunisia">🇹🇳 Tunisia</option>
+          <option value="Egypt">🇪🇬 Egypt</option>
+          <option value="Algeria">🇩🇿 Algeria</option>
+          <option value="Panama">🇵🇦 Panama</option>
+          <option value="Costa Rica">🇨🇷 Costa Rica</option>
+          <option value="Venezuela">🇻🇪 Venezuela</option>
+          <option value="Thailand">🇹🇭 Thailand</option>
+          <option value="Kazakhstan">🇰🇿 Kazakhstan</option>
+          <option value="UAE">🇦🇪 UAE</option>
+          <option value="WW English">🌍 Worldwide English</option>
+          <option value="WW French">🌍 Worldwide French</option>
+          <option value="WW Spanish">🌍 Worldwide Spanish</option>
+          <option value="WW Arabic">🌍 Worldwide Arabic</option>
+          <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row"><label>Notes</label><textarea id="ev-notes" placeholder="Details, links, context…" style="min-height:55px;"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="ev-delete-btn" onclick="deleteEvent()" style="display:none;background:#FEE2E2;color:#DC2626;border-color:#FCA5A5;">🗑️ Delete</button>
+      <button class="btn-cancel" onclick="closeModal('event-modal')">Cancel</button>
+      <button class="btn-primary" onclick="saveEvent()">Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="overlay" id="add-modal">
+  <div class="modal">
+    <h3 id="modal-title">➕ Add New Task</h3>
+    <div class="form-row"><label>Task Description *</label><input type="text" id="f-name" placeholder="What needs to be done?"/></div>
+    <div class="form-grid">
+      <div class="form-row"><label>Category</label>
+        <select id="f-cat">
+          <option value="website">🌐 Website</option>
+          <option value="campaign">📣 Campaign</option>
+          <option value="social">📱 Social Media</option>
+          <option value="email">📧 Email Comms</option>
+          <option value="tickets">🎫 Ticket / Support</option>
+          <option value="sales">💼 Sales Info</option>
+          <option value="marketing">🎯 Marketing Task</option>
+          <option value="admin">🗂️ Admin</option>
+          <option value="ambassador">🏅 Ambassador Project</option>
+          <option value="nelly">👩‍💼 Nelly</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Priority</label>
+        <select id="f-pri">
+          <option value="high">🔴 High</option>
+          <option value="medium" selected>🟡 Medium</option>
+          <option value="low">🟢 Low</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Market</label>
+        <select id="f-market">
+          <option value="">— All / Central —</option>
+          <option value="Romania">🇷🇴 Romania</option>
+          <option value="Slovenia">🇸🇮 Slovenia</option>
+          <option value="Latvia">🇱🇻 Latvia</option>
+          <option value="UK">🇬🇧 UK</option>
+          <option value="Hungary">🇭🇺 Hungary</option>
+          <option value="Tunisia">🇹🇳 Tunisia</option>
+          <option value="Egypt">🇪🇬 Egypt</option>
+          <option value="Algeria">🇩🇿 Algeria</option>
+          <option value="Panama">🇵🇦 Panama</option>
+          <option value="Costa Rica">🇨🇷 Costa Rica</option>
+          <option value="Venezuela">🇻🇪 Venezuela</option>
+          <option value="Thailand">🇹🇭 Thailand</option>
+          <option value="Kazakhstan">🇰🇿 Kazakhstan</option>
+          <option value="UAE">🇦🇪 UAE</option>
+          <option value="WW English">🌍 Worldwide English</option>
+          <option value="WW French">🌍 Worldwide French</option>
+          <option value="WW Spanish">🌍 Worldwide Spanish</option>
+          <option value="WW Arabic">🌍 Worldwide Arabic</option>
+          <option value="Saudi Arabia">🇸🇦 Saudi Arabia</option>
+        </select>
+      </div>
+      <div class="form-row"><label>Due Date</label><input type="date" id="f-due"/></div>
+    </div>
+    <div class="form-row"><label>Status</label>
+      <select id="f-status">
+        <option value="todo">📋 To Do</option>
+        <option value="inprogress">⚙️ In Progress</option>
+        <option value="review">👀 In Review</option>
+        <option value="done">✅ Done</option>
+      </select>
+    </div>
+    <div class="form-row"><label>Who owns this task?</label>
+      <select id="f-ownership" onchange="toggleAssigneeRow()">
+        <option value="mine">🙋 My Task — I'm doing this</option>
+        <option value="followup">👀 Waiting / Follow Up — someone else is doing it, I need to check in</option>
+        <option value="helping">🤝 I'm Helping — someone else owns it but needs my input</option>
+      </select>
+    </div>
+    <div class="form-row" id="f-assignee-row"><label>Assigned to / Waiting on</label><input type="text" id="f-assignee" placeholder="e.g. Nelly, Romania market, Dev team…"/></div>
+    <div class="form-row"><label>Ticket # / Reference</label><input type="text" id="f-ticket" placeholder="e.g. TKT-1042, Jira link…"/></div>
+    <div class="form-row"><label>Notes</label><textarea id="f-notes" placeholder="Add context, links, next steps, details…"></textarea></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('add-modal')">Cancel</button>
+      <button class="btn-primary" id="modal-save-btn" onclick="saveTask()">Add Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- PARSE MODAL -->
+<div class="overlay" id="parse-modal">
+  <div class="modal">
+    <h3>✨ Extracted Tasks</h3>
+    <p style="font-size:0.77rem;color:var(--ef-gray);margin-bottom:13px;">Tick the tasks you want to add to your board.</p>
+    <div id="parsed-list"></div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal('parse-modal')">Cancel</button>
+      <button class="btn-primary" onclick="addParsed()">Add Selected</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MARKETS=['Romania','Slovenia','Latvia','UK','Hungary','Tunisia','Egypt','Algeria','Panama','Costa Rica','Venezuela','Thailand','Kazakhstan','UAE','WW English','WW French','WW Spanish','WW Arabic','Saudi Arabia'];
+const FLAGS={Romania:'🇷🇴',Slovenia:'🇸🇮',Latvia:'🇱🇻',UK:'🇬🇧',Hungary:'🇭🇺',Tunisia:'🇹🇳',Egypt:'🇪🇬',Algeria:'🇩🇿',Panama:'🇵🇦','Costa Rica':'🇨🇷',Venezuela:'🇻🇪',Thailand:'🇹🇭',Kazakhstan:'🇰🇿',UAE:'🇦🇪','WW English':'🌍','WW French':'🌍','WW Spanish':'🌍','WW Arabic':'🌍','Saudi Arabia':'🇸🇦'};
+const CAT={
+  website:   {label:'🌐 Website',   color:'#0072CE',bg:'#EFF6FF',border:'#0072CE'},
+  campaign:  {label:'📣 Campaign',  color:'#E91E8C',bg:'#FDE8F4',border:'#E91E8C'},
+  social:    {label:'📱 Social',    color:'#9C27B0',bg:'#F3E8FF',border:'#9C27B0'},
+  email:     {label:'📧 Email',     color:'#059669',bg:'#D1FAE5',border:'#059669'},
+  tickets:   {label:'🎫 Ticket',    color:'#DC2626',bg:'#FEE2E2',border:'#DC2626'},
+  sales:     {label:'💼 Sales',     color:'#D97706',bg:'#FEF3C7',border:'#D97706'},
+  marketing: {label:'🎯 Marketing', color:'#F59E0B',bg:'#FFFBEB',border:'#F59E0B'},
+  admin:     {label:'🗂️ Admin',     color:'#64748B',bg:'#F1F5F9',border:'#94A3B8'},
+  ambassador:{label:'🏅 Ambassador',color:'#7C3AED',bg:'#EDE9FE',border:'#7C3AED'},
+  nelly:     {label:'👩‍💼 Nelly',    color:'#0EA5E9',bg:'#E0F2FE',border:'#0EA5E9'},
+};
+const PRI={
+  high:  {label:'🔴 High',  color:'#DC2626',bg:'#FEE2E2'},
+  medium:{label:'🟡 Med',   color:'#D97706',bg:'#FEF3C7'},
+  low:   {label:'🟢 Low',   color:'#059669',bg:'#D1FAE5'},
+};
+
+let tasks=[], nid=1, activeView='all', activeOwner='all', parsedCandidates=[], editingId=null, addingStatus='todo';
+const today=new Date().toISOString().split('T')[0];
+document.getElementById('date-display').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const mk=s=>s.replace(/[\s:.]/g,'_');
+
+// Sidebar markets
+document.getElementById('market-sidebar').innerHTML=MARKETS.map(m=>
+  `<div class="sidebar-item" onclick="setView('market:${m}',this)" id="ms-${mk(m)}"><span>${FLAGS[m]||'🌐'}</span>${m}<span class="sc" id="sc-m-${mk(m)}">0</span></div>`
+).join('');
+
+// Seed
+function seed(){}
+
+function setView(v,el){
+  activeView=v;
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  if(el)el.classList.add('active');
+  document.getElementById('nelly-strip').style.display=v==='nelly'?'flex':'none';
+  const titles={all:'All Tasks',nelly:'Nelly — Ambassador Project',tickets:'Tickets & Support',website:'Website Updates',campaign:'Campaigns',social:'Social Media',email:'Email Communications',sales:'Sales Information',marketing:'Marketing Tasks',admin:'Admin',ambassador:'Ambassador Project'};
+  document.getElementById('view-title').textContent=v.startsWith('market:')?`${FLAGS[v.slice(7)]||''} ${v.slice(7)}`:(titles[v]||v);
+  render();
+}
+
+function setOwnerFilter(v,el){
+  activeOwner=v;
+  document.querySelectorAll('.own-tab').forEach(t=>t.classList.remove('active'));
+  if(el)el.classList.add('active');
+  render();
+}
+
+function filterTasks(list){
+  const q=(document.getElementById('search-input').value||'').toLowerCase();
+  return list.filter(t=>{
+    if(q&&!t.name.toLowerCase().includes(q)&&!(t.notes||'').toLowerCase().includes(q)&&!(t.ticket||'').toLowerCase().includes(q)&&!(t.assignee||'').toLowerCase().includes(q))return false;
+    if(activeOwner!=='all'&&t.ownership!==activeOwner)return false;
+    if(activeView==='all')return true;
+    if(activeView==='nelly')return t.cat==='nelly'||t.cat==='ambassador';
+    if(activeView==='tickets')return t.cat==='tickets';
+    if(activeView.startsWith('market:'))return t.market===activeView.slice(7);
+    return t.cat===activeView;
+  });
+}
+
+function render(){
+  const cols={todo:[],inprogress:[],review:[],done:[]};
+  tasks.forEach(t=>{if(cols[t.status])cols[t.status].push(t);});
+  ['todo','inprogress','review','done'].forEach(st=>{
+    const filtered=filterTasks(cols[st]);
+    const cont=document.getElementById(`col-${st}`);
+    document.getElementById(`k-count-${st}`).textContent=filtered.length;
+    cont.innerHTML=filtered.length===0?`<div class="empty-col"><span class="e-icon">${{todo:'📋',inprogress:'⚙️',review:'👀',done:'🎉'}[st]}</span>Nothing here yet</div>`:'';
+    filtered.forEach(t=>cont.appendChild(buildCard(t,st)));
+  });
+  document.getElementById('s-total').textContent=filterTasks(tasks).length;
+  document.getElementById('s-todo').textContent=filterTasks(cols.todo).length;
+  document.getElementById('s-prog').textContent=filterTasks(cols.inprogress).length;
+  document.getElementById('s-review').textContent=filterTasks(cols.review).length;
+  document.getElementById('s-done').textContent=filterTasks(cols.done).length;
+  // ownership tab counts (not filtered by owner so tabs always show global)
+  const allActive=tasks.filter(t=>t.status!=='done');
+  document.getElementById('ot-all').textContent=tasks.length;
+  document.getElementById('ot-mine').textContent=tasks.filter(t=>t.ownership==='mine'||!t.ownership).length;
+  document.getElementById('ot-followup').textContent=tasks.filter(t=>t.ownership==='followup').length;
+  document.getElementById('ot-helping').textContent=tasks.filter(t=>t.ownership==='helping').length;
+  renderAttention();
+  const cc={};
+  tasks.forEach(t=>{cc[t.cat]=(cc[t.cat]||0)+1;if(t.market)cc['m:'+t.market]=(cc['m:'+t.market]||0)+1;});
+  ['website','campaign','social','email','tickets','sales','marketing','admin','ambassador','nelly'].forEach(c=>{const e=document.getElementById(`sc-${c}`);if(e)e.textContent=cc[c]||0;});
+  document.getElementById('sc-all').textContent=tasks.length;
+  document.getElementById('sc-nelly').textContent=(cc.nelly||0)+(cc.ambassador||0);
+  document.getElementById('sc-tickets').textContent=cc.tickets||0;
+  MARKETS.forEach(m=>{const e=document.getElementById(`sc-m-${mk(m)}`);if(e)e.textContent=cc['m:'+m]||0;});
+  document.getElementById('nelly-todo').textContent=tasks.filter(t=>(t.cat==='nelly'||t.cat==='ambassador')&&t.status==='todo').length;
+  document.getElementById('nelly-prog').textContent=tasks.filter(t=>(t.cat==='nelly'||t.cat==='ambassador')&&t.status==='inprogress').length;
+  document.getElementById('nelly-done').textContent=tasks.filter(t=>(t.cat==='nelly'||t.cat==='ambassador')&&t.status==='done').length;
+}
+
+function buildCard(t,st){
+  const cm=CAT[t.cat]||CAT.admin, pm=PRI[t.pri]||PRI.medium;
+  const isOverdue=t.due&&t.due<today&&st!=='done';
+  const moves={todo:[{s:'inprogress',l:'▶ Start'}],inprogress:[{s:'todo',l:'↩ Back'},{s:'review',l:'👀 Review'}],review:[{s:'inprogress',l:'↩ Back'},{s:'done',l:'✅ Done'}],done:[{s:'todo',l:'↩ Reopen'}]};
+  const card=document.createElement('div');
+  card.className='task-card';
+  card.style.borderLeftColor=cm.border;
+  const ownMeta={
+    mine:     {cls:'own-badge-mine',    label:'🙋 Mine'},
+    followup: {cls:'own-badge-followup',label:'👀 Follow Up'},
+    helping:  {cls:'own-badge-helping', label:'🤝 Helping'},
+  };
+  const om=ownMeta[t.ownership]||ownMeta.mine;
+  card.innerHTML=`
+    <div class="task-card-top">
+      <div class="task-title${st==='done'?' done-text':''}">${esc(t.name)}</div>
+      <div class="card-actions">
+        <button title="Edit" onclick="openEditModal(${t.id})">✏️</button>
+        <button title="Delete" onclick="deleteTask(${t.id})">🗑️</button>
+      </div>
+    </div>
+    <div class="task-badges">
+      <span class="badge" style="color:${cm.color};background:${cm.bg}">${cm.label}</span>
+      <span class="badge" style="color:${pm.color};background:${pm.bg}">${pm.label}</span>
+      <span class="${om.cls}">${om.label}</span>
+      ${t.ticket?`<span class="ticket-badge">🎫 ${esc(t.ticket)}</span>`:''}
+    </div>
+    ${t.assignee?`<div style="margin-bottom:6px;"><span class="helper-pill">👤 ${esc(t.assignee)}</span></div>`:''}
+    <div class="task-footer">
+      <span class="task-market">${t.market?`${FLAGS[t.market]||'🌐'} ${t.market}`:'🌐 Central'}</span>
+      ${t.due?`<span class="task-due${isOverdue?' overdue':''}">${isOverdue?'⚠️ ':'📅 '}${fmtDate(t.due)}</span>`:''}
+    </div>
+    ${t.notes?`<div class="task-notes-preview">📝 ${esc(t.notes)}</div>`:''}
+    <div class="move-btns">${(moves[st]||[]).map(o=>`<button class="move-btn" onclick="moveTask(${t.id},'${o.s}')">${o.l}</button>`).join('')}</div>`;
+  return card;
+}
+
+function moveTask(id,ns){const t=tasks.find(x=>x.id===id);if(t){t.status=ns;t.lastTouched=new Date().toISOString();render(); scheduleSave();}}
+function deleteTask(id){if(confirm('Delete this task?')){tasks=tasks.filter(x=>x.id!==id);render(); scheduleSave();}}
+
+function openAddModal(status){
+  editingId=null; addingStatus=status||'todo';
+  document.getElementById('modal-title').textContent='➕ Add New Task';
+  document.getElementById('modal-save-btn').textContent='Add Task';
+  ['f-name','f-ticket','f-notes','f-due','f-assignee'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('f-cat').value='website';
+  document.getElementById('f-pri').value='medium';
+  document.getElementById('f-market').value='';
+  document.getElementById('f-status').value=addingStatus;
+  document.getElementById('f-ownership').value='mine';
+  toggleAssigneeRow();
+  document.getElementById('add-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('f-name').focus(),100);
+}
+
+function openEditModal(id){
+  const t=tasks.find(x=>x.id===id); if(!t)return;
+  editingId=id;
+  document.getElementById('modal-title').textContent='✏️ Edit Task';
+  document.getElementById('modal-save-btn').textContent='Save Changes';
+  document.getElementById('f-name').value=t.name;
+  document.getElementById('f-cat').value=t.cat;
+  document.getElementById('f-pri').value=t.pri;
+  document.getElementById('f-market').value=t.market||'';
+  document.getElementById('f-due').value=t.due||'';
+  document.getElementById('f-status').value=t.status;
+  document.getElementById('f-ownership').value=t.ownership||'mine';
+  document.getElementById('f-assignee').value=t.assignee||'';
+  document.getElementById('f-ticket').value=t.ticket||'';
+  document.getElementById('f-notes').value=t.notes||'';
+  toggleAssigneeRow();
+  document.getElementById('add-modal').classList.add('open');
+}
+
+function toggleAssigneeRow(){
+  const own=document.getElementById('f-ownership').value;
+  const row=document.getElementById('f-assignee-row');
+  const lbl=row.querySelector('label');
+  row.style.display='flex';
+  if(own==='mine') row.style.display='none';
+  else if(own==='followup') lbl.textContent='Waiting on (person / team)';
+  else lbl.textContent='Helping with / Requested by';
+}
+
+function saveTask(){
+  const name=document.getElementById('f-name').value.trim();
+  if(!name){document.getElementById('f-name').focus();return;}
+  const data={name,cat:document.getElementById('f-cat').value,pri:document.getElementById('f-pri').value,market:document.getElementById('f-market').value,due:document.getElementById('f-due').value,status:document.getElementById('f-status').value,ownership:document.getElementById('f-ownership').value,assignee:document.getElementById('f-assignee').value.trim(),ticket:document.getElementById('f-ticket').value.trim(),notes:document.getElementById('f-notes').value.trim(),lastTouched:new Date().toISOString()};
+  if(editingId){const t=tasks.find(x=>x.id===editingId);if(t)Object.assign(t,data);}
+  else tasks.push({id:nid++,...data});
+  closeModal('add-modal'); render(); scheduleSave();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function toggleCapture(){document.getElementById('capture-panel').classList.toggle('open');}
+
+function parseNotes(){
+  const text=document.getElementById('capture-text').value.trim(); if(!text)return;
+  const re=/(?:need to|must|have to|should|don't forget|remember to|follow up|reply to|send|prepare|review|update|call|email|book|schedule|check|confirm|submit|share|create|draft|arrange|contact|chase|open ticket|monitor|track)\s+[^.,!?\n]{5,90}/gi;
+  let found=[],m;
+  while((m=re.exec(text))!==null){let i=m[0].trim();i=i[0].toUpperCase()+i.slice(1);if(!found.includes(i))found.push(i);}
+  if(!found.length)found=text.split(/[.!?\n]+/).map(s=>s.trim()).filter(s=>s.length>8).slice(0,8);
+  parsedCandidates=found.slice(0,10);
+  document.getElementById('parsed-list').innerHTML=parsedCandidates.map((item,i)=>`<div class="parsed-item"><input type="checkbox" id="pi${i}" checked/><span>${esc(item)}</span></div>`).join('');
+  document.getElementById('capture-panel').classList.remove('open');
+  document.getElementById('parse-modal').classList.add('open');
+}
+
+function addParsed(){
+  parsedCandidates.forEach((item,i)=>{const cb=document.getElementById(`pi${i}`);if(cb&&cb.checked)tasks.push({id:nid++,name:item,cat:'admin',pri:'medium',market:'',status:'todo',due:'',ticket:'',notes:'',lastTouched:new Date().toISOString()});});
+  render(); closeModal('parse-modal'); document.getElementById('capture-text').value='';
+}
+
+// ── NEEDS ATTENTION ──
+const STALE_DAYS = 3;
+let attentionOpen = true;
+
+function getDaysAgo(iso){
+  if(!iso) return 999;
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+}
+
+function renderAttention(){
+  const stale = tasks.filter(t => t.status !== 'done' && getDaysAgo(t.lastTouched) >= STALE_DAYS);
+  stale.sort((a,b) => getDaysAgo(b.lastTouched) - getDaysAgo(a.lastTouched));
+  const grid = document.getElementById('attention-grid');
+  const count = document.getElementById('attention-count');
+  const section = document.getElementById('attention-section');
+  count.textContent = stale.length + ' task' + (stale.length !== 1 ? 's' : '');
+  section.style.display = stale.length === 0 ? 'none' : 'block';
+  if(stale.length === 0){ grid.innerHTML=''; return; }
+  if(!attentionOpen){ grid.innerHTML=''; return; }
+  grid.innerHTML = '';
+  stale.forEach(t => {
+    const cm = CAT[t.cat]||CAT.admin;
+    const days = getDaysAgo(t.lastTouched);
+    const card = document.createElement('div');
+    card.className = 'attention-card';
+    card.innerHTML = `
+      <div class="attention-card-title">${esc(t.name)}</div>
+      <div class="attention-meta">
+        <span class="badge" style="color:${cm.color};background:${cm.bg};font-size:0.65rem;">${cm.label}</span>
+        ${t.market?`<span class="badge" style="color:#6B7280;background:#F1F5F9;font-size:0.65rem;">${FLAGS[t.market]||'🌐'} ${t.market}</span>`:''}
+      </div>
+      <div class="attention-days">⏰ Untouched for <b style="margin:0 3px;">${days}</b> day${days!==1?'s':''}</div>
+      <div class="attention-actions">
+        <button class="attention-btn" onclick="touchTask(${t.id})">👆 Mark reviewed</button>
+        <button class="attention-btn" onclick="openEditModal(${t.id})">✏️ Edit</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+
+function touchTask(id){
+  const t = tasks.find(x=>x.id===id);
+  if(t){ t.lastTouched = new Date().toISOString(); render(); scheduleSave(); }
+}
+
+function toggleAttention(){
+  attentionOpen = !attentionOpen;
+  document.getElementById('attention-toggle').classList.toggle('open', attentionOpen);
+  document.getElementById('attention-body').style.display = attentionOpen ? 'block' : 'none';
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function fmtDate(d){if(!d)return'';const[y,mo,da]=d.split('-');return`${da}/${mo}/${y}`;}
+
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
+document.getElementById('f-name').addEventListener('keydown',e=>{if(e.key==='Enter')saveTask();});
+
+// ── PERSISTENCE (Google Apps Script Web App) ──
+// After you deploy your Apps Script Web App, paste the URL into GAS_ENDPOINT.
+// Example: https://script.google.com/macros/s/XXXX/exec
+const GAS_ENDPOINT = 'https://script.google.com/a/macros/ef.edu/s/AKfycbxORd-oafFi4LDpjhdxOAFOWsRAr4JQRF7Is_rdSTvfiXYq500KWUPSH6q9pesoHZ_B/exec';
+// Optional shared secret validated in Apps Script (useful if you later broaden access)
+const GAS_TOKEN = '';
+
+let isHydrating = false;
+let saveTimer = null;
+
+function apiUrl(params={}){
+  const u = new URL(GAS_ENDPOINT);
+  Object.entries(params).forEach(([k,v])=>u.searchParams.set(k,v));
+  if(GAS_TOKEN) u.searchParams.set('token', GAS_TOKEN);
+  return u.toString();
+}
+
+async function apiGet(entity){
+  if(!GAS_ENDPOINT) return { items: [] };
+  const res = await fetch(apiUrl({action:'get', entity}), { method:'GET' });
+  if(!res.ok) throw new Error('Load failed: '+res.status);
+  return await res.json();
+}
+
+async function apiPut(payload){
+  if(!GAS_ENDPOINT) return { ok:false, skipped:true };
+  const res = await fetch(apiUrl({action:'put'}), {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  });
+  if(!res.ok) throw new Error('Save failed: '+res.status);
+  return await res.json();
+}
+
+function scheduleSave(){
+  if(isHydrating) return;
+  if(!GAS_ENDPOINT) return;
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(()=>{
+    saveAll().catch(()=>{/* keep UI quiet */});
+  }, 700);
+}
+
+async function loadAll(){
+  if(!GAS_ENDPOINT) return;
+  isHydrating = true;
+  try{
+    const [t,e,mn,ml] = await Promise.all([
+      apiGet('tasks'),
+      apiGet('events'),
+      apiGet('market_notes'),
+      apiGet('meeting_log')
+    ]);
+
+    if(t && Array.isArray(t.items)){
+      tasks = t.items;
+      const maxId = tasks.reduce((m,x)=>Math.max(m, Number(x.id)||0), 0);
+      nid = maxId + 1;
+    }
+
+    if(e && Array.isArray(e.items)){
+      calEvents = e.items;
+      const maxEid = calEvents.reduce((m,x)=>Math.max(m, Number(x.id)||0), 0);
+      calEid = maxEid + 1;
+    }
+
+    window.__marketNotes = (mn && Array.isArray(mn.items)) ? mn.items : [];
+    window.__meetingLog = (ml && Array.isArray(ml.items)) ? ml.items : [];
+
+  } finally {
+    isHydrating = false;
+  }
+}
+
+async function saveAll(){
+  if(!GAS_ENDPOINT) return;
+  const payload = {
+    tasks,
+    events: calEvents,
+    market_notes: window.__marketNotes || [],
+    meeting_log: window.__meetingLog || [],
+    meta: { savedAt: new Date().toISOString() }
+  };
+  await apiPut(payload);
+}
+
+function boot(){
+  // Load from Sheets (if configured), then render.
+  if(GAS_ENDPOINT){
+    loadAll().then(()=>{ render(); initCal(); }).catch(()=>{ render(); initCal(); });
+  } else {
+    render();
+    initCal();
+  }
+}
+
+boot();
+
+// ── CALENDAR ──
+let calEvents = [];
+let calEid = 1;
+let calYear, calMonth;
+let calOpen = true;
+let editingEventId = null;
+
+const EV_META = {
+  campaign:{ label:'📣 Campaign', cls:'ev-campaign' },
+  deadline:{ label:'🔴 Deadline', cls:'ev-deadline' },
+  meeting: { label:'📞 Meeting',  cls:'ev-meeting'  },
+  social:  { label:'📱 Social',   cls:'ev-social'   },
+  website: { label:'🌐 Website',  cls:'ev-website'  },
+  email:   { label:'📧 Email',    cls:'ev-email'    },
+  other:   { label:'📌 Other',    cls:'ev-other'    },
+};
+
+function seedCalEvents(){}
+seedCalEvents();
+
+function initCal(){
+  const now = new Date();
+  calYear = now.getFullYear();
+  calMonth = now.getMonth();
+  renderCal();
+}
+
+function calPrev(){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} renderCal(); }
+function calNext(){ calMonth++; if(calMonth>11){calMonth=0;calYear++;} renderCal(); }
+function calToday(){ const n=new Date(); calYear=n.getFullYear(); calMonth=n.getMonth(); renderCal(); }
+function toggleCalendar(){
+  calOpen=!calOpen;
+  document.getElementById('cal-toggle').classList.toggle('open',calOpen);
+  document.getElementById('calendar-body').style.display=calOpen?'block':'none';
+}
+
+function renderCal(){
+  const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  document.getElementById('cal-month-title').textContent=`${MONTHS[calMonth]} ${calYear}`;
+  document.getElementById('cal-header-sub').textContent=`${MONTHS[calMonth]} ${calYear} · Campaigns · Deadlines · Meetings · Market dates`;
+
+  const grid=document.getElementById('cal-grid');
+  grid.innerHTML='';
+  DAYS.forEach(d=>{ const el=document.createElement('div'); el.className='cal-day-name'; el.textContent=d; grid.appendChild(el); });
+
+  const firstDay=new Date(calYear,calMonth,1);
+  let startDow=firstDay.getDay(); // 0=Sun
+  startDow=(startDow===0)?6:startDow-1; // shift so Mon=0
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  const today=new Date(); const todayStr=today.toISOString().split('T')[0];
+
+  const totalCells=Math.ceil((startDow+daysInMonth)/7)*7;
+
+  for(let i=0;i<totalCells;i++){
+    const cell=document.createElement('div');
+    cell.className='cal-day';
+    let dayNum, monthOffset=0;
+    if(i<startDow){ dayNum=daysInPrev-startDow+i+1; monthOffset=-1; cell.classList.add('other-month'); }
+    else if(i>=startDow+daysInMonth){ dayNum=i-startDow-daysInMonth+1; monthOffset=1; cell.classList.add('other-month'); }
+    else{ dayNum=i-startDow+1; }
+
+    const cellMonth=calMonth+monthOffset;
+    const cellYear=cellMonth<0?calYear-1:(cellMonth>11?calYear+1:calYear);
+    const cellMonthNorm=((cellMonth%12)+12)%12;
+    const dateStr=`${cellYear}-${String(cellMonthNorm+1).padStart(2,'0')}-${String(dayNum).padStart(2,'0')}`;
+
+    if(dateStr===todayStr) cell.classList.add('today');
+
+    const numDiv=document.createElement('div'); numDiv.className='cal-day-num'; numDiv.textContent=dayNum;
+    cell.appendChild(numDiv);
+
+    // events on this day
+    const dayEvs=calEvents.filter(ev=>{
+      if(ev.end&&ev.end>=ev.date){ return dateStr>=ev.date && dateStr<=ev.end; }
+      return ev.date===dateStr;
+    });
+    const maxShow=3;
+    dayEvs.slice(0,maxShow).forEach(ev=>{
+      const em=EV_META[ev.type]||EV_META.other;
+      const evEl=document.createElement('div');
+      evEl.className=`cal-event ${em.cls}`;
+      evEl.textContent=(ev.market?FLAGS[ev.market]+' ':'')+ev.name;
+      evEl.title=ev.name+(ev.market?' — '+ev.market:'')+(ev.notes?'\n'+ev.notes:'');
+      evEl.onclick=(e)=>{e.stopPropagation();openEditEventModal(ev.id);};
+      cell.appendChild(evEl);
+    });
+    if(dayEvs.length>maxShow){
+      const more=document.createElement('div'); more.className='cal-more';
+      more.textContent=`+${dayEvs.length-maxShow} more`;
+      more.onclick=(e)=>{e.stopPropagation(); showDayEvents(dateStr,dayEvs);};
+      cell.appendChild(more);
+    }
+    cell.onclick=()=>quickAddEventOnDay(dateStr);
+    grid.appendChild(cell);
+  }
+  renderUpcoming();
+}
+
+function renderUpcoming(){
+  const strip=document.getElementById('upcoming-strip');
+  const todayStr=new Date().toISOString().split('T')[0];
+  const monthEnd=`${calYear}-${String(calMonth+1).padStart(2,'0')}-31`;
+  const monthStart=`${calYear}-${String(calMonth+1).padStart(2,'0')}-01`;
+  const upcoming=calEvents
+    .filter(ev=>ev.date>=monthStart&&ev.date<=monthEnd&&ev.date>=todayStr)
+    .sort((a,b)=>a.date.localeCompare(b.date))
+    .slice(0,12);
+  strip.innerHTML='';
+  if(!upcoming.length){
+    strip.innerHTML='<div style="padding:10px 0;font-size:0.78rem;color:#C4B5D4;">No upcoming events this month</div>';
+    return;
+  }
+  upcoming.forEach(ev=>{
+    const em=EV_META[ev.type]||EV_META.other;
+    const [y,mo,d]=ev.date.split('-');
+    const chip=document.createElement('div'); chip.className='upcoming-chip';
+    chip.innerHTML=`
+      <div class="upcoming-chip-date">${d} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(mo)-1]} ${y}</div>
+      <div class="upcoming-chip-title">${ev.market?FLAGS[ev.market]+' ':''}${esc(ev.name)}</div>
+      <span class="upcoming-chip-tag ${em.cls}">${em.label}</span>`;
+    chip.onclick=()=>openEditEventModal(ev.id);
+    strip.appendChild(chip);
+  });
+}
+
+function openAddEventModal(dateStr){
+  editingEventId=null;
+  document.getElementById('event-modal-title').textContent='📅 Add Calendar Event';
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-date').value=dateStr||'';
+  document.getElementById('ev-end').value='';
+  document.getElementById('ev-type').value='campaign';
+  document.getElementById('ev-market').value='';
+  document.getElementById('ev-notes').value='';
+  document.getElementById('ev-delete-btn').style.display='none';
+  document.getElementById('event-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('ev-name').focus(),100);
+}
+
+function quickAddEventOnDay(dateStr){
+  openAddEventModal(dateStr);
+}
+
+function openEditEventModal(id){
+  const ev=calEvents.find(x=>x.id===id); if(!ev)return;
+  editingEventId=id;
+  document.getElementById('event-modal-title').textContent='✏️ Edit Event';
+  document.getElementById('ev-name').value=ev.name;
+  document.getElementById('ev-date').value=ev.date;
+  document.getElementById('ev-end').value=ev.end||'';
+  document.getElementById('ev-type').value=ev.type;
+  document.getElementById('ev-market').value=ev.market||'';
+  document.getElementById('ev-notes').value=ev.notes||'';
+  document.getElementById('ev-delete-btn').style.display='inline-flex';
+  document.getElementById('event-modal').classList.add('open');
+}
+
+function saveEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  if(!name){document.getElementById('ev-name').focus();return;}
+  const data={name,date:document.getElementById('ev-date').value,end:document.getElementById('ev-end').value,type:document.getElementById('ev-type').value,market:document.getElementById('ev-market').value,notes:document.getElementById('ev-notes').value.trim()};
+  if(!data.date){document.getElementById('ev-date').focus();return;}
+  if(editingEventId){const ev=calEvents.find(x=>x.id===editingEventId);if(ev)Object.assign(ev,data);}
+  else calEvents.push({id:calEid++,...data});
+  closeModal('event-modal');
+  renderCal();
+  scheduleSave();
+}
+
+function deleteEvent(){
+  if(!editingEventId)return;
+  if(confirm('Delete this event?')){ calEvents=calEvents.filter(x=>x.id!==editingEventId); closeModal('event-modal'); renderCal(); scheduleSave(); }
+}
+
+function showDayEvents(dateStr,evs){
+  // just open the first one for simplicity
+  if(evs.length) openEditEventModal(evs[0].id);
+}
+
+// ── THEME ENGINE ──
+const PRESETS = [
+  { name:'EF Rose',    h1:'#fff0f6', h2:'#7B5EA7', s1:'#fff8fb', s2:'#B06AAF', bg:'#F9F5FB', accent:'#C2477A' },
+  { name:'Ocean',      h1:'#e0f2fe', h2:'#0369a1', s1:'#f0f9ff', s2:'#0284c7', bg:'#F0F7FF', accent:'#0072CE' },
+  { name:'Forest',     h1:'#d1fae5', h2:'#065f46', s1:'#ecfdf5', s2:'#059669', bg:'#F0FBF6', accent:'#059669' },
+  { name:'Sunset',     h1:'#fff7ed', h2:'#c2410c', s1:'#fffbeb', s2:'#d97706', bg:'#FFFAF5', accent:'#D97706' },
+  { name:'Lavender',   h1:'#f5f3ff', h2:'#6d28d9', s1:'#faf5ff', s2:'#7c3aed', bg:'#F7F4FF', accent:'#7C3AED' },
+  { name:'Slate',      h1:'#f1f5f9', h2:'#334155', s1:'#f8fafc', s2:'#475569', bg:'#F4F6F9', accent:'#475569' },
+  { name:'Berry',      h1:'#fdf2f8', h2:'#9d174d', s1:'#fef9fb', s2:'#be185d', bg:'#FDF5FA', accent:'#BE185D' },
+  { name:'Teal',       h1:'#f0fdfa', h2:'#0f766e', s1:'#f0fdfa', s2:'#0d9488', bg:'#F0FDFB', accent:'#0F766E' },
+  { name:'Midnight',   h1:'#1a1a2e', h2:'#000000', s1:'#16213e', s2:'#0f0f1a', bg:'#F0F0F2', accent:'#6366F1' },
+  { name:'Charcoal',   h1:'#374151', h2:'#111827', s1:'#4B5563', s2:'#1F2937', bg:'#F3F4F6', accent:'#6B7280' },
+  { name:'Navy',       h1:'#1e3a5f', h2:'#0a1628', s1:'#1e3a5f', s2:'#0d2137', bg:'#EFF3F8', accent:'#3B82F6' },
+  { name:'Onyx',       h1:'#2d2d2d', h2:'#000000', s1:'#1a1a1a', s2:'#000000', bg:'#FFFFFF',  accent:'#E5E7EB' },
+];
+
+let currentTheme = { ...PRESETS[0] };
+
+function buildPresetGrid() {
+  const grid = document.getElementById('preset-grid');
+  grid.innerHTML = PRESETS.map((p, i) => `
+    <div onclick="applyPreset(${i})" title="${p.name}" style="
+      cursor:pointer; border-radius:8px; overflow:hidden;
+      height:40px; border:2px solid transparent; transition:all 0.15s;
+      background:linear-gradient(135deg,${p.h1},${p.h2});
+      display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;
+    " onmouseover="this.style.borderColor='#1A1A2E';this.style.transform='scale(1.06)'"
+       onmouseout="this.style.borderColor='transparent';this.style.transform='scale(1)'">
+      <span style="font-size:0.55rem;font-weight:700;color:rgba(0,0,0,0.5);background:rgba(255,255,255,0.6);border-radius:3px;padding:1px 4px;">${p.name}</span>
+    </div>`).join('');
+}
+
+function applyTheme(t) {
+  currentTheme = { ...t };
+  document.querySelector('header').style.background = `linear-gradient(95deg, ${t.h1} 0%, ${t.h2} 100%)`;
+  document.querySelector('.sidebar').style.background = `linear-gradient(175deg, ${t.s1} 0%, ${t.s2} 100%)`;
+  document.querySelector('.content').style.background = t.bg;
+  document.body.style.background = t.bg;
+  // accent
+  document.documentElement.style.setProperty('--ef-pink', t.accent);
+  document.documentElement.style.setProperty('--ef-magenta', t.accent);
+  document.documentElement.style.setProperty('--c-campaign', t.accent);
+  // sync pickers
+  document.getElementById('tc-h1').value = t.h1; document.getElementById('tc-h1-val').textContent = t.h1;
+  document.getElementById('tc-h2').value = t.h2; document.getElementById('tc-h2-val').textContent = t.h2;
+  document.getElementById('tc-s1').value = t.s1; document.getElementById('tc-s1-val').textContent = t.s1;
+  document.getElementById('tc-s2').value = t.s2; document.getElementById('tc-s2-val').textContent = t.s2;
+  document.getElementById('tc-bg').value = t.bg; document.getElementById('tc-bg-val').textContent = t.bg;
+  document.getElementById('tc-accent').value = t.accent; document.getElementById('tc-accent-val').textContent = t.accent;
+}
+
+function applyPreset(i) { applyTheme(PRESETS[i]); }
+
+function applyCustom() {
+  const t = {
+    h1: document.getElementById('tc-h1').value,
+    h2: document.getElementById('tc-h2').value,
+    s1: document.getElementById('tc-s1').value,
+    s2: document.getElementById('tc-s2').value,
+    bg: document.getElementById('tc-bg').value,
+    accent: document.getElementById('tc-accent').value,
+  };
+  document.getElementById('tc-h1-val').textContent = t.h1;
+  document.getElementById('tc-h2-val').textContent = t.h2;
+  document.getElementById('tc-s1-val').textContent = t.s1;
+  document.getElementById('tc-s2-val').textContent = t.s2;
+  document.getElementById('tc-bg-val').textContent = t.bg;
+  document.getElementById('tc-accent-val').textContent = t.accent;
+  applyTheme(t);
+}
+
+function resetTheme() { applyPreset(0); }
+
+function toggleThemePanel() {
+  const p = document.getElementById('theme-panel');
+  p.style.display = p.style.display === 'none' ? 'block' : 'none';
+}
+
+// Close theme panel on outside click
+document.addEventListener('click', e => {
+  const panel = document.getElementById('theme-panel');
+  if (panel.style.display === 'block' && !panel.contains(e.target) && !e.target.closest('button[onclick="toggleThemePanel()"]')) {
+    panel.style.display = 'none';
+  }
+});
+
+buildPresetGrid();
+applyPreset(0);
+initCal();
+</script>
+</body>
+</html>
